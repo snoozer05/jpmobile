@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{jpmobile}
-  s.version = "1.0.0.pre"
+  s.version = "2.0.0.pre.2"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Yoji Shidara", "Shin-ichiro OGAWA"]
-  s.date = %q{2011-01-28}
+  s.date = %q{2011-08-01}
   s.description = %q{A Rails plugin for Japanese mobile-phones}
   s.email = %q{dara@shidara.net}
   s.extra_rdoc_files = [
@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
     "README.rdoc"
   ]
   s.files = [
+    ".rspec",
     "CHANGELOG",
     "Gemfile",
     "MIT-LICENSE",
@@ -26,6 +27,7 @@ Gem::Specification.new do |s|
     "VERSION.yml",
     "init.rb",
     "install.rb",
+    "jpmobile.gemspec",
     "lib/jpmobile.rb",
     "lib/jpmobile/datum_conv.rb",
     "lib/jpmobile/docomo_guid.rb",
@@ -40,7 +42,10 @@ Gem::Specification.new do |s|
     "lib/jpmobile/filter.rb",
     "lib/jpmobile/helpers.rb",
     "lib/jpmobile/hook_action_controller.rb",
+    "lib/jpmobile/hook_action_dispatch.rb",
     "lib/jpmobile/hook_action_view.rb",
+    "lib/jpmobile/hook_test_request.rb",
+    "lib/jpmobile/lookup_context.rb",
     "lib/jpmobile/mail.rb",
     "lib/jpmobile/mailer.rb",
     "lib/jpmobile/mobile/abstract_mobile.rb",
@@ -67,18 +72,6 @@ Gem::Specification.new do |s|
     "lib/jpmobile/trans_sid.rb",
     "lib/jpmobile/util.rb",
     "lib/tasks/jpmobile_tasks.rake",
-    "tools/emoji/genregexp.rb",
-    "tools/generate_au_emoticon_table.rb",
-    "tools/generate_docomo_emoticon_table.rb",
-    "tools/generate_emoticon_conversion_table.rb",
-    "tools/generate_softbank_emoticon_table.rb",
-    "tools/list_gps_unsupported_au.rb"
-  ]
-  s.homepage = %q{http://jpmobile-rails.org}
-  s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.7}
-  s.summary = %q{A Rails plugin for Japanese mobile-phones}
-  s.test_files = [
     "spec/rack/jpmobile/android_spec.rb",
     "spec/rack/jpmobile/au_spec.rb",
     "spec/rack/jpmobile/docomo_spec.rb",
@@ -92,7 +85,22 @@ Gem::Specification.new do |s|
     "spec/rack/jpmobile/windows_phone.rb",
     "spec/rack_helper.rb",
     "spec/spec_helper.rb",
-    "spec/unit/detect_by_email_spec.rb",
+    "spec/unit/email-fixtures/au-attached.eml",
+    "spec/unit/email-fixtures/au-decomail.eml",
+    "spec/unit/email-fixtures/au-emoji.eml",
+    "spec/unit/email-fixtures/au-emoji2.eml",
+    "spec/unit/email-fixtures/au-emoji5.eml",
+    "spec/unit/email-fixtures/docomo-emoji.eml",
+    "spec/unit/email-fixtures/docomo-gmail-sjis.eml",
+    "spec/unit/email-fixtures/docomo-jis.eml",
+    "spec/unit/email-fixtures/pc-mail-multi.eml",
+    "spec/unit/email-fixtures/pc-mail-single.eml",
+    "spec/unit/email-fixtures/softbank-blank.eml",
+    "spec/unit/email-fixtures/softbank-emoji-utf8.eml",
+    "spec/unit/email-fixtures/softbank-emoji.eml",
+    "spec/unit/email-fixtures/softbank-gmail-sjis.eml",
+    "spec/unit/email-fixtures/softbank-gmail-utf8.eml",
+    "spec/unit/email_spec.rb",
     "spec/unit/emoticon_spec.rb",
     "spec/unit/encoding_spec.rb",
     "spec/unit/is_carrier_spec.rb",
@@ -101,6 +109,9 @@ Gem::Specification.new do |s|
     "spec/unit/spec_helper.rb",
     "spec/unit/util_spec.rb",
     "spec/unit/valid_ip_spec.rb",
+    "test/rails/.gitignore",
+    "test/rails/overrides/.rspec",
+    "test/rails/overrides/Gemfile",
     "test/rails/overrides/app/controllers/application_controller.rb",
     "test/rails/overrides/app/controllers/docomo_guid_always_controller.rb",
     "test/rails/overrides/app/controllers/docomo_guid_base_controller.rb",
@@ -121,14 +132,72 @@ Gem::Specification.new do |s|
     "test/rails/overrides/app/models/mobile_mailer.rb",
     "test/rails/overrides/app/models/normal_mailer.rb",
     "test/rails/overrides/app/models/user.rb",
+    "test/rails/overrides/app/views/filter/index.html.erb",
+    "test/rails/overrides/app/views/hankaku_filter/index.html.erb",
+    "test/rails/overrides/app/views/hankaku_input_filter/index.html.erb",
+    "test/rails/overrides/app/views/hankaku_input_filter/index_xhtml.html.erb",
+    "test/rails/overrides/app/views/layouts/application_mobile.html.erb",
+    "test/rails/overrides/app/views/layouts/xhtml.html.erb",
+    "test/rails/overrides/app/views/links/au_gps.html.erb",
+    "test/rails/overrides/app/views/links/au_location.html.erb",
+    "test/rails/overrides/app/views/links/docomo_foma_gps.html.erb",
+    "test/rails/overrides/app/views/links/docomo_openiarea.html.erb",
+    "test/rails/overrides/app/views/links/docomo_utn.html.erb",
+    "test/rails/overrides/app/views/links/link.html.erb",
+    "test/rails/overrides/app/views/links/show_all.html.erb",
+    "test/rails/overrides/app/views/links/softbank_location.html.erb",
+    "test/rails/overrides/app/views/links/willcom_location.html.erb",
+    "test/rails/overrides/app/views/mobile_mailer/multi_message.html.erb",
+    "test/rails/overrides/app/views/mobile_mailer/multi_message.text.erb",
+    "test/rails/overrides/app/views/mobile_mailer/view_selection.html.erb",
+    "test/rails/overrides/app/views/mobile_mailer/view_selection_mobile.html.erb",
+    "test/rails/overrides/app/views/mobile_mailer/view_selection_mobile_au.html.erb",
+    "test/rails/overrides/app/views/mobile_mailer/view_selection_mobile_docomo.html.erb",
+    "test/rails/overrides/app/views/mobile_mailer/view_selection_mobile_emobile.html.erb",
+    "test/rails/overrides/app/views/mobile_mailer/view_selection_mobile_softbank.html.erb",
+    "test/rails/overrides/app/views/mobile_mailer/view_selection_mobile_vodafone.html.erb",
+    "test/rails/overrides/app/views/mobile_mailer/view_selection_mobile_willcom.html.erb",
+    "test/rails/overrides/app/views/mobile_spec/index.html.erb",
+    "test/rails/overrides/app/views/mobile_spec/index_mobile.html.erb",
+    "test/rails/overrides/app/views/normal_mailer/msg.text.erb",
+    "test/rails/overrides/app/views/template_path/_partial.html.erb",
+    "test/rails/overrides/app/views/template_path/_partial_mobile.html.erb",
+    "test/rails/overrides/app/views/template_path/_partial_mobile_docomo.html.erb",
+    "test/rails/overrides/app/views/template_path/_partial_smart_phone.html.erb",
+    "test/rails/overrides/app/views/template_path/_partial_smart_phone_iphone.html.erb",
+    "test/rails/overrides/app/views/template_path/index.html.erb",
+    "test/rails/overrides/app/views/template_path/index_mobile.html.erb",
+    "test/rails/overrides/app/views/template_path/index_mobile_docomo.html.erb",
+    "test/rails/overrides/app/views/template_path/index_smart_phone.html.erb",
+    "test/rails/overrides/app/views/template_path/index_smart_phone_iphone.html.erb",
+    "test/rails/overrides/app/views/template_path/partial.html.erb",
+    "test/rails/overrides/app/views/template_path/show_mobile.html.erb",
+    "test/rails/overrides/app/views/template_path/show_mobile_docomo.html.erb",
     "test/rails/overrides/autotest/discover.rb",
     "test/rails/overrides/config/initializers/jpmobile_generator.rb",
     "test/rails/overrides/config/routes.rb",
     "test/rails/overrides/db/migrate/001_add_sessions_table.rb",
     "test/rails/overrides/db/migrate/20100824062306_create_users.rb",
+    "test/rails/overrides/spec/controllers/mobile_spec_controller_spec.rb",
+    "test/rails/overrides/spec/fixtures/mobile_mailer/au-attached.eml",
+    "test/rails/overrides/spec/fixtures/mobile_mailer/au-decomail.eml",
+    "test/rails/overrides/spec/fixtures/mobile_mailer/au-emoji.eml",
+    "test/rails/overrides/spec/fixtures/mobile_mailer/au-emoji2.eml",
+    "test/rails/overrides/spec/fixtures/mobile_mailer/au-emoji5.eml",
+    "test/rails/overrides/spec/fixtures/mobile_mailer/docomo-emoji.eml",
+    "test/rails/overrides/spec/fixtures/mobile_mailer/docomo-gmail-sjis.eml",
+    "test/rails/overrides/spec/fixtures/mobile_mailer/docomo-jis.eml",
+    "test/rails/overrides/spec/fixtures/mobile_mailer/no-from.eml",
+    "test/rails/overrides/spec/fixtures/mobile_mailer/non-jp.eml",
+    "test/rails/overrides/spec/fixtures/mobile_mailer/softbank-blank.eml",
+    "test/rails/overrides/spec/fixtures/mobile_mailer/softbank-emoji-utf8.eml",
+    "test/rails/overrides/spec/fixtures/mobile_mailer/softbank-emoji.eml",
+    "test/rails/overrides/spec/fixtures/mobile_mailer/softbank-gmail-sjis.eml",
+    "test/rails/overrides/spec/fixtures/mobile_mailer/softbank-gmail-utf8.eml",
     "test/rails/overrides/spec/helpers/helpers_spec.rb",
     "test/rails/overrides/spec/models/mobile_mailer_spec.rb",
     "test/rails/overrides/spec/models/normal_mailer_spec.rb",
+    "test/rails/overrides/spec/rcov.opts",
     "test/rails/overrides/spec/requests/docomo_guid_spec.rb",
     "test/rails/overrides/spec/requests/docomo_spec.rb",
     "test/rails/overrides/spec/requests/emobile_spec.rb",
@@ -139,197 +208,78 @@ Gem::Specification.new do |s|
     "test/rails/overrides/spec/requests/template_path_spec.rb",
     "test/rails/overrides/spec/requests/trans_sid_spec.rb",
     "test/rails/overrides/spec/spec_helper.rb",
-    "test/rails/rails_root/app/controllers/application_controller.rb",
-    "test/rails/rails_root/app/controllers/docomo_guid_always_controller.rb",
-    "test/rails/rails_root/app/controllers/docomo_guid_base_controller.rb",
-    "test/rails/rails_root/app/controllers/docomo_guid_docomo_controller.rb",
-    "test/rails/rails_root/app/controllers/filter_controller.rb",
-    "test/rails/rails_root/app/controllers/filter_controller_base.rb",
-    "test/rails/rails_root/app/controllers/hankaku_filter_controller.rb",
-    "test/rails/rails_root/app/controllers/hankaku_input_filter_controller.rb",
-    "test/rails/rails_root/app/controllers/links_controller.rb",
-    "test/rails/rails_root/app/controllers/mobile_spec_controller.rb",
-    "test/rails/rails_root/app/controllers/template_path_controller.rb",
-    "test/rails/rails_root/app/controllers/trans_sid_always_and_session_off_controller.rb",
-    "test/rails/rails_root/app/controllers/trans_sid_always_controller.rb",
-    "test/rails/rails_root/app/controllers/trans_sid_base_controller.rb",
-    "test/rails/rails_root/app/controllers/trans_sid_metal_controller.rb",
-    "test/rails/rails_root/app/controllers/trans_sid_mobile_controller.rb",
-    "test/rails/rails_root/app/controllers/trans_sid_none_controller.rb",
-    "test/rails/rails_root/app/helpers/application_helper.rb",
-    "test/rails/rails_root/app/models/mobile_mailer.rb",
-    "test/rails/rails_root/app/models/normal_mailer.rb",
-    "test/rails/rails_root/app/models/user.rb",
-    "test/rails/rails_root/autotest/discover.rb",
-    "test/rails/rails_root/config/application.rb",
-    "test/rails/rails_root/config/boot.rb",
-    "test/rails/rails_root/config/environment.rb",
-    "test/rails/rails_root/config/environments/development.rb",
-    "test/rails/rails_root/config/environments/production.rb",
-    "test/rails/rails_root/config/environments/test.rb",
-    "test/rails/rails_root/config/initializers/backtrace_silencers.rb",
-    "test/rails/rails_root/config/initializers/inflections.rb",
-    "test/rails/rails_root/config/initializers/jpmobile_generator.rb",
-    "test/rails/rails_root/config/initializers/mime_types.rb",
-    "test/rails/rails_root/config/initializers/secret_token.rb",
-    "test/rails/rails_root/config/initializers/session_store.rb",
-    "test/rails/rails_root/config/routes.rb",
-    "test/rails/rails_root/db/migrate/001_add_sessions_table.rb",
-    "test/rails/rails_root/db/migrate/20100824062306_create_users.rb",
-    "test/rails/rails_root/db/schema.rb",
-    "test/rails/rails_root/db/seeds.rb",
-    "test/rails/rails_root/spec/helpers/helpers_spec.rb",
-    "test/rails/rails_root/spec/models/mobile_mailer_spec.rb",
-    "test/rails/rails_root/spec/models/normal_mailer_spec.rb",
-    "test/rails/rails_root/spec/requests/docomo_guid_spec.rb",
-    "test/rails/rails_root/spec/requests/docomo_spec.rb",
-    "test/rails/rails_root/spec/requests/emobile_spec.rb",
-    "test/rails/rails_root/spec/requests/filter_spec.rb",
-    "test/rails/rails_root/spec/requests/helpers_spec.rb",
-    "test/rails/rails_root/spec/requests/pc_spec.rb",
-    "test/rails/rails_root/spec/requests/softbank_emulator_spec.rb",
-    "test/rails/rails_root/spec/requests/template_path_spec.rb",
-    "test/rails/rails_root/spec/requests/trans_sid_spec.rb",
-    "test/rails/rails_root/spec/spec_helper.rb",
-    "test/rails/rails_root/test/performance/browsing_test.rb",
-    "test/rails/rails_root/test/test_helper.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile-ipaddresses/lib/jpmobile-ipaddresses.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile-ipaddresses/lib/jpmobile/mobile/ip_addresses/abstract_ip_addresses.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile-ipaddresses/lib/jpmobile/mobile/ip_addresses/au.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile-ipaddresses/lib/jpmobile/mobile/ip_addresses/docomo.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile-ipaddresses/lib/jpmobile/mobile/ip_addresses/emobile.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile-ipaddresses/lib/jpmobile/mobile/ip_addresses/softbank.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile-ipaddresses/lib/jpmobile/mobile/ip_addresses/willcom.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile-terminfo/lib/jpmobile-terminfo.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile-terminfo/lib/jpmobile/mobile/terminfo.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile-terminfo/lib/jpmobile/mobile/terminfo/docomo.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile-terminfo/spec/spec_helper.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile-terminfo/spec/terminfo_spec.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/init.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/install.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/datum_conv.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/docomo_guid.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/email.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/emoticon.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/emoticon/au.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/emoticon/conversion_table.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/emoticon/docomo.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/emoticon/softbank.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/emoticon/z_combine.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/encoding.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/filter.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/helpers.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/hook_action_controller.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/hook_action_view.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/mail.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/mailer.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/mobile/abstract_mobile.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/mobile/android.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/mobile/au.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/mobile/ddipocket.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/mobile/docomo.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/mobile/emobile.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/mobile/iphone.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/mobile/smart_phone.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/mobile/softbank.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/mobile/vodafone.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/mobile/willcom.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/mobile/windows_phone.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/path_set.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/position.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/rack.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/rack/filter.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/rack/mobile_carrier.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/rack/params_filter.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/rails.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/request_with_mobile.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/resolver.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/trans_sid.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/lib/jpmobile/util.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/tmp/conversion-table.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/tmp/utf8_to_image.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/tools/emoji/genregexp.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/tools/generate_au_emoticon_table.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/tools/generate_docomo_emoticon_table.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/tools/generate_emoticon_conversion_table.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/tools/generate_softbank_emoticon_table.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/tools/list_gps_unsupported_au.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/vendor/jpmobile-ipaddresses/lib/jpmobile-ipaddresses.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/vendor/jpmobile-ipaddresses/lib/jpmobile/mobile/ip_addresses/abstract_ip_addresses.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/vendor/jpmobile-ipaddresses/lib/jpmobile/mobile/ip_addresses/au.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/vendor/jpmobile-ipaddresses/lib/jpmobile/mobile/ip_addresses/docomo.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/vendor/jpmobile-ipaddresses/lib/jpmobile/mobile/ip_addresses/emobile.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/vendor/jpmobile-ipaddresses/lib/jpmobile/mobile/ip_addresses/softbank.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/vendor/jpmobile-ipaddresses/lib/jpmobile/mobile/ip_addresses/willcom.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/vendor/jpmobile-terminfo/lib/jpmobile-terminfo.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/vendor/jpmobile-terminfo/lib/jpmobile/mobile/terminfo.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/vendor/jpmobile-terminfo/lib/jpmobile/mobile/terminfo/docomo.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/vendor/jpmobile-terminfo/spec/spec_helper.rb",
-    "test/rails/rails_root/vendor/plugins/jpmobile/vendor/jpmobile-terminfo/spec/terminfo_spec.rb",
     "test/sinatra/guestbook.rb",
-    "test/sinatra/test/filter_test.rb"
+    "test/sinatra/test/filter_test.rb",
+    "tools/emoji/genregexp.rb",
+    "tools/generate_au_emoticon_table.rb",
+    "tools/generate_docomo_emoticon_table.rb",
+    "tools/generate_emoticon_conversion_table.rb",
+    "tools/generate_softbank_emoticon_table.rb",
+    "tools/list_gps_unsupported_au.rb"
   ]
+  s.homepage = %q{http://jpmobile-rails.org}
+  s.require_paths = ["lib"]
+  s.rubygems_version = %q{1.6.2}
+  s.summary = %q{A Rails plugin for Japanese mobile-phones}
 
   if s.respond_to? :specification_version then
-    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<jeweler>, [">= 0"])
-      s.add_development_dependency(%q<rails>, [">= 3.0.3"])
-      s.add_development_dependency(%q<rspec>, [">= 2.3.0"])
-      s.add_development_dependency(%q<rspec-rails>, [">= 2.3.0"])
+      s.add_development_dependency(%q<rails>, ["= 3.1.0.rc5"])
+      s.add_development_dependency(%q<rspec>, [">= 0"])
+      s.add_development_dependency(%q<rspec-rails>, [">= 0"])
       s.add_development_dependency(%q<webrat>, [">= 0"])
       s.add_development_dependency(%q<geokit>, [">= 0"])
       s.add_development_dependency(%q<sqlite3-ruby>, [">= 0"])
       s.add_development_dependency(%q<hpricot>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, [">= 1.5.1"])
-      s.add_development_dependency(%q<rspec>, [">= 2.3.0"])
-      s.add_development_dependency(%q<rspec-rails>, [">= 2.3.0"])
+      s.add_development_dependency(%q<rspec>, [">= 2.6.0"])
+      s.add_development_dependency(%q<rspec-rails>, [">= 2.6.0"])
       s.add_development_dependency(%q<webrat>, [">= 0.7.2"])
       s.add_development_dependency(%q<geokit>, [">= 1.5.0"])
       s.add_development_dependency(%q<sqlite3-ruby>, [">= 1.3.2"])
       s.add_development_dependency(%q<hpricot>, [">= 0.8.3"])
       s.add_development_dependency(%q<git>, [">= 1.2.5"])
-      s.add_development_dependency(%q<rails>, [">= 3.0.3"])
+      s.add_development_dependency(%q<rails>, [">= 3.1.0.rc5"])
     else
       s.add_dependency(%q<jeweler>, [">= 0"])
-      s.add_dependency(%q<rails>, [">= 3.0.3"])
-      s.add_dependency(%q<rspec>, [">= 2.3.0"])
-      s.add_dependency(%q<rspec-rails>, [">= 2.3.0"])
+      s.add_dependency(%q<rails>, ["= 3.1.0.rc5"])
+      s.add_dependency(%q<rspec>, [">= 0"])
+      s.add_dependency(%q<rspec-rails>, [">= 0"])
       s.add_dependency(%q<webrat>, [">= 0"])
       s.add_dependency(%q<geokit>, [">= 0"])
       s.add_dependency(%q<sqlite3-ruby>, [">= 0"])
       s.add_dependency(%q<hpricot>, [">= 0"])
       s.add_dependency(%q<jeweler>, [">= 1.5.1"])
-      s.add_dependency(%q<rspec>, [">= 2.3.0"])
-      s.add_dependency(%q<rspec-rails>, [">= 2.3.0"])
+      s.add_dependency(%q<rspec>, [">= 2.6.0"])
+      s.add_dependency(%q<rspec-rails>, [">= 2.6.0"])
       s.add_dependency(%q<webrat>, [">= 0.7.2"])
       s.add_dependency(%q<geokit>, [">= 1.5.0"])
       s.add_dependency(%q<sqlite3-ruby>, [">= 1.3.2"])
       s.add_dependency(%q<hpricot>, [">= 0.8.3"])
       s.add_dependency(%q<git>, [">= 1.2.5"])
-      s.add_dependency(%q<rails>, [">= 3.0.3"])
+      s.add_dependency(%q<rails>, [">= 3.1.0.rc5"])
     end
   else
     s.add_dependency(%q<jeweler>, [">= 0"])
-    s.add_dependency(%q<rails>, [">= 3.0.3"])
-    s.add_dependency(%q<rspec>, [">= 2.3.0"])
-    s.add_dependency(%q<rspec-rails>, [">= 2.3.0"])
+    s.add_dependency(%q<rails>, ["= 3.1.0.rc5"])
+    s.add_dependency(%q<rspec>, [">= 0"])
+    s.add_dependency(%q<rspec-rails>, [">= 0"])
     s.add_dependency(%q<webrat>, [">= 0"])
     s.add_dependency(%q<geokit>, [">= 0"])
     s.add_dependency(%q<sqlite3-ruby>, [">= 0"])
     s.add_dependency(%q<hpricot>, [">= 0"])
     s.add_dependency(%q<jeweler>, [">= 1.5.1"])
-    s.add_dependency(%q<rspec>, [">= 2.3.0"])
-    s.add_dependency(%q<rspec-rails>, [">= 2.3.0"])
+    s.add_dependency(%q<rspec>, [">= 2.6.0"])
+    s.add_dependency(%q<rspec-rails>, [">= 2.6.0"])
     s.add_dependency(%q<webrat>, [">= 0.7.2"])
     s.add_dependency(%q<geokit>, [">= 1.5.0"])
     s.add_dependency(%q<sqlite3-ruby>, [">= 1.3.2"])
     s.add_dependency(%q<hpricot>, [">= 0.8.3"])
     s.add_dependency(%q<git>, [">= 1.2.5"])
-    s.add_dependency(%q<rails>, [">= 3.0.3"])
+    s.add_dependency(%q<rails>, [">= 3.1.0.rc5"])
   end
 end
 
